@@ -1,35 +1,48 @@
 const canvas = document.querySelector('canvas')
+/** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
+// logo position
 const ingo = document.querySelector('.card')
 let ingoXY = ingo.getBoundingClientRect();
 let ingoTop = Math.round(ingoXY.top)
 let ingoLeft = Math.round(ingoXY.left)
 let ingoRight = Math.round(ingoXY.right)
 
+// decide id 'click' turns on or off rain
 let rainyDay = false
+// to be able to stop animation
 let requestId
+// to hinder 'click' from stopping animation before rain is gone
+let animTime = true
 
 const rainArray = []
 const splashArray = []
 
+// moving rain sideways
 let wind = -1
-let rainFall = 10
+// moving rain downwards
+let rainFallSpeed = 10
+// calculate when rain hits logo if screen resizes
+let ingoTopDiff = ingoTop % rainFallSpeed
 
-let ingoTopDiff = ingoTop % rainFall
-
+// start/stop rain when 'click' in window
 canvas.addEventListener('click', () => {
   if (rainyDay) {
-    setTimeout(stopAnimate, 1800);
+    setTimeout(stopAnimate, 2000);
     rainyDay = false
   } else {
-    startAnimate()
-    rainyDay = true
+    if (animTime) {
+      runAnimate()
+      rainyDay = true
+      animTime = false
+    }
   }
 })
 
+// keep code intact while resizing window
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
@@ -37,7 +50,7 @@ window.addEventListener('resize', () => {
   ingoTop = Math.round(ingoXY.top)
   ingoLeft = Math.round(ingoXY.left)
   ingoRight = Math.round(ingoXY.right)
-  ingoTopDiff = ingoTop % rainFall
+  ingoTopDiff = ingoTop % rainFallSpeed
 })
 
 class Rain{
@@ -46,7 +59,7 @@ class Rain{
     this.y = 0
     this.radius = 1.2
     this.dx = wind
-    this.dy = rainFall
+    this.dy = rainFallSpeed
   }
 
   update(){
@@ -90,6 +103,7 @@ class Splash{
   }
 }
 
+// produce new rain
 function init(){
   for (let i = 0; i < 10; i++){
     rainArray.push(new Rain())
@@ -118,7 +132,7 @@ function handleSplash(){
   }
 }
 
-
+// animation loop
 function animate(){
   requestId = undefined;
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -127,10 +141,10 @@ function animate(){
   if (rainyDay) {
     init()
   }
-  startAnimate()
+  runAnimate()
 }
 
-function startAnimate(){
+function runAnimate(){
   if (!requestId) {
     requestId = window.requestAnimationFrame(animate);
  }
@@ -140,5 +154,6 @@ function stopAnimate() {
   if (requestId) {
      window.cancelAnimationFrame(requestId);
      requestId = undefined;
+     animTime = true
     }
 }
