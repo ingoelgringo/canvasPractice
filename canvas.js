@@ -31,7 +31,7 @@ let ingoTopDiff = ingoTop % rainFallSpeed
 // start/stop rain when 'click' in window
 canvas.addEventListener('click', () => {
   if (rainyDay) {
-    setTimeout(stopAnimate, 3000);
+    setTimeout(stopAnimate, 2000);
     rainyDay = false
   } else {
     if (animTime) {
