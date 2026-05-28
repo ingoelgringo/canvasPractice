@@ -2,6 +2,8 @@
 
 Ett litet övningsprojekt för att experimentera med partiklar i canvas.
 
+https://ingoelgringo.github.io/canvasPractice/
+
 ### Vad det gör
 
 - Regn faller över skärmen med en liten vindeffekt.
